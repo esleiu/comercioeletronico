@@ -176,9 +176,14 @@ class View:
         try:
             if total <= 0:
                 raise ValueError("O total da compra deve ser positivo.")
-            a = Compra(0, datetime.now(), total, id_cliente)
+            
+
+            compras = Compras.listar()
+            novo_id = max([compra.get_id() for compra in compras], default=0) + 1
+            
+            a = Compra(novo_id, datetime.now(), total, id_cliente)
             Compras.inserir(a)
-            return a.get_id()  
+            return a.get_id()
         except Exception as e:
             print(f"Erro ao inserir compra: {e}")
             raise
@@ -197,9 +202,11 @@ class View:
     @staticmethod
     def compra_excluir(id):
         try:
+            itens_relacionados = View.item_listar_por_compra(id)
+            for item in itens_relacionados:
+                View.item_excluir(item.get_id())  
             a = Compra(id, datetime.now(), 0.0, 0)
             Compras.excluir(a)
         except Exception as e:
             print(f"Erro ao excluir compra: {e}")
             raise
-

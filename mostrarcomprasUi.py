@@ -7,12 +7,12 @@ class MostrarComprasUi:
     def main():
         st.header("minhas compras")
         
-        #pega o id do cliente logado
+        
         cliente_id = st.session_state.get("cliente_id")
         
         if cliente_id:
             try:
-                #lista todas as compras do cliente
+                
                 compras = View.compra_listar_por_cliente(cliente_id)
                 
                 if len(compras) == 0:
@@ -27,12 +27,12 @@ class MostrarComprasUi:
                         if len(itens) == 0:
                             st.write("nenhum item nesta compra.")
                         else:
-                            #cria uma tabela para mostrar os itens da compra
+                            
                             lista_itens = []
                             for item in itens:
                                 produto = View.produto_listar_id(item.get_id_produto())
                                 if produto:
-                                    #adiciona os dados de cada item à lista
+                                    
                                     lista_itens.append({
                                         'quantidade': item.get_qtd(),
                                         'produto': produto.get_descricao(),

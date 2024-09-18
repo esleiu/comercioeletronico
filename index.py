@@ -7,19 +7,23 @@ from manteritemUI import ManterItemUi
 from mostrarcomprasUi import MostrarComprasUi
 from realizarcompraUI import RealizarCompraUI
 from excluircompraUI import ExcluirComprasUi
+from manterclienteUI import ManterclienteUi
 
 class indexUI:
     @staticmethod
     def menu_adm():
-        op = st.sidebar.selectbox("Menu Admin", ["Manter Produto", "Manter Compra", "Manter Item", "Logout"])
+        op = st.sidebar.selectbox("Menu Admin", ["Manter Produto", "Manter Compra", "Manter Item","Manter cliente", "Logout"])
         if op == "Manter Produto":
             ManterProdutoUi.Main()
         elif op == "Manter Compra":
             ManterComprasUi.Main()
         elif op == "Manter Item":
             ManterItemUi.Main()
+        elif op == "Manter cliente":
+            ManterclienteUi.Main()
         elif op == "Logout":
             LogoutUI.main()
+            
 
     @staticmethod
     def menu_usuario():
@@ -46,7 +50,7 @@ class indexUI:
             cliente_nome = st.session_state["cliente_nome"]
             st.sidebar.write(f"Bem-vindo(a), {cliente_nome}!")
             
-            if cliente_nome == "admin":  #verifica se é o administrador
+            if cliente_nome == "admin":# administrador
                 indexUI.menu_adm()  
             else:
                 indexUI.menu_usuario()  #usuário comum
