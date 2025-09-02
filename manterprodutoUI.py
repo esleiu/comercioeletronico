@@ -30,14 +30,16 @@ class ManterProdutoUi:
         
         if st.button("inserir"):
             try:
-                preco = float(preco)
-                estoque = int(estoque)  
-                View.produto_inserir(descricao, preco, estoque)
+                preco_float = float(preco)
+                estoque_int = int(estoque)  
+                View.produto_inserir(descricao, preco_float, estoque_int)
                 st.success("produto adicionado!")
                 time.sleep(2)
                 st.rerun()
             except ValueError:
                 st.error("preço deve ser um número e estoque deve ser um inteiro")
+            except Exception as e:
+                st.error(f"Ocorreu um erro: {e}")
 
     def atualizar():
         produtos = View.produto_listar()
@@ -51,15 +53,17 @@ class ManterProdutoUi:
             
             if st.button("atualizar"):
                 try:
-                    preco = float(preco)  
-                    estoque = int(estoque) 
+                    preco_float = float(preco)  
+                    estoque_int = int(estoque) 
                     id = op.get_id()
-                    View.produto_atualizar(id, descricao, preco, estoque)
+                    View.produto_atualizar(id, descricao, preco_float, estoque_int)
                     st.success("produto atualizado com sucesso")
                     time.sleep(2)
                     st.rerun()
                 except ValueError:
                     st.error("preço deve ser um número e estoque deve ser um inteiro")
+                except Exception as e:
+                    st.error(f"Ocorreu um erro: {e}")
 
     def excluir():
         produtos = View.produto_listar()

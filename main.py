@@ -8,7 +8,7 @@ from modelo import Modelo
 # cliente
 class Cliente:
     def __init__(self, id: int, nome: str, email: str, fone: str, endereco: str, senha: str):
-        if nome == "" or email == "" or senha == "":
+        if not all([nome, email, senha]):
             raise ValueError("nome, e-mail e senha são obrigatórios")
         self.__id = id
         self.__nome = nome
@@ -217,7 +217,7 @@ class Clientes(Modelo):
                 for obj in texto_arquivo:
                     c = Cliente(obj["_Cliente__id"], obj["_Cliente__nome"], obj["_Cliente__email"], obj["_Cliente__fone"], obj["_Cliente__endereco"], obj["_Cliente__senha"])
                     cls.objetos.append(c)
-        except FileNotFoundError:
+        except (FileNotFoundError, json.JSONDecodeError):
             pass
 
 # persistência - itens
@@ -245,7 +245,7 @@ class Itens(Modelo):
                         obj['preco']
                     )
                     cls.objetos.append(i)
-        except FileNotFoundError:
+        except (FileNotFoundError, json.JSONDecodeError):
             pass
 
 # persistência - produtos
@@ -262,20 +262,19 @@ class Produtos(Modelo):
     def abrir(cls):
         cls.objetos = []
         try:
-            with open("produtos.json", mode="r") as arquivo:
+            with open("produtos.json", "r") as arquivo:
                 texto_arquivo = json.load(arquivo)
                 for obj in texto_arquivo:
                     p = Produto(
-                        obj["_Produto__id"], 
-                        obj["_Produto__descricao"], 
-                        float(obj["_Produto__preco"]),  # conversão para float
-                        int(obj["_Produto__estoque"])   # conversão para int
+                        obj["_Produto__id"],
+                        obj["_Produto__descricao"],
+                        float(obj["_Produto__preco"]),
+                        int(obj["_Produto__estoque"])
                     )
                     cls.objetos.append(p)
-        except FileNotFoundError:
-            pass
-        except Exception as e:
+        except (FileNotFoundError, json.JSONDecodeError, ValueError, KeyError) as e:
             print(f"erro ao abrir o arquivo de produtos: {e}")
+
 
 # persistência - compras
 class Compras(Modelo):
@@ -291,17 +290,15 @@ class Compras(Modelo):
     def abrir(cls):
         cls.objetos = []
         try:
-            with open("vendas.json", mode="r") as arquivo:
+            with open("vendas.json", "r") as arquivo:
                 texto_arquivo = json.load(arquivo)
                 for obj in texto_arquivo:
                     v = Compra(
-                        obj['id'], 
-                        datetime.strptime(obj['data'], "%d/%m/%Y %H:%M"),  
-                        float(obj['total']),  # conversão para float
+                        obj['id'],
+                        datetime.strptime(obj['data'], "%d/%m/%Y %H:%M"),
+                        float(obj['total']),
                         obj['idcliente']
                     )
                     cls.objetos.append(v)
-        except FileNotFoundError:
-            pass
-        except Exception as e:
+        except (FileNotFoundError, json.JSONDecodeError, ValueError, KeyError) as e:
             print(f"erro ao abrir o arquivo de vendas: {e}")

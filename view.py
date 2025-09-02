@@ -1,5 +1,6 @@
 from main import Cliente, Clientes, Produto, Produtos, Compra, Compras, Item, Itens
 from datetime import datetime
+import re
 
 class View:
     # Cliente
@@ -8,6 +9,8 @@ class View:
         try:
             if not nome or not email:
                 raise ValueError("Nome e e-mail são obrigatórios.")
+            if not re.match(r"[^@]+@[^@]+\.[^@]+", email):
+                raise ValueError("E-mail inválido.")
             a = Cliente(0, nome, email, fone, endereco, senha)
             Clientes.inserir(a)
         except Exception as e:
@@ -25,6 +28,10 @@ class View:
     @staticmethod
     def cliente_atualizar(id, nome, email, fone, endereco, senha):
         try:
+            if not nome or not email:
+                raise ValueError("Nome e e-mail são obrigatórios.")
+            if not re.match(r"[^@]+@[^@]+\.[^@]+", email):
+                raise ValueError("E-mail inválido.")
             a = Cliente(id, nome, email, fone, endereco, senha)
             Clientes.atualizar(a)
         except Exception as e:
@@ -64,8 +71,10 @@ class View:
     @staticmethod
     def produto_inserir(descricao, preco, estoque):
         try:
-            if preco <= 0 or estoque < 0:
-                raise ValueError("Preço deve ser positivo e o estoque não pode ser negativo.")
+            if preco <= 0:
+                raise ValueError("Preço deve ser um número positivo.")
+            if estoque < 0:
+                raise ValueError("Estoque não pode ser negativo.")
             a = Produto(0, descricao, preco, estoque)
             Produtos.inserir(a)
         except Exception as e:
@@ -75,8 +84,10 @@ class View:
     @staticmethod
     def produto_atualizar(id, descricao, preco, estoque):
         try:
-            if preco <= 0 or estoque < 0:
-                raise ValueError("Preço deve ser positivo e o estoque não pode ser negativo.")
+            if preco <= 0:
+                raise ValueError("Preço deve ser um número positivo.")
+            if estoque < 0:
+                raise ValueError("Estoque não pode ser negativo.")
             a = Produto(id, descricao, preco, estoque)
             Produtos.atualizar(a)
         except Exception as e:
@@ -116,8 +127,10 @@ class View:
     @staticmethod
     def item_inserir(id_produto, id_compra, qtd, preco):
         try:
-            if qtd <= 0 or preco <= 0:
-                raise ValueError("Quantidade e preço devem ser positivos.")
+            if qtd <= 0:
+                raise ValueError("Quantidade deve ser um número positivo.")
+            if preco <= 0:
+                raise ValueError("Preço deve ser um número positivo.")
             a = Item(0, id_produto, id_compra, qtd, preco)
             Itens.inserir(a)
         except Exception as e:
@@ -136,8 +149,10 @@ class View:
     @staticmethod
     def item_atualizar(id, id_produto, id_compra, qtd, preco):
         try:
-            if qtd <= 0 or preco <= 0:
-                raise ValueError("Quantidade e preço devem ser positivos.")
+            if qtd <= 0:
+                raise ValueError("Quantidade deve ser um número positivo.")
+            if preco <= 0:
+                raise ValueError("Preço deve ser um número positivo.")
             a = Item(id, id_produto, id_compra, qtd, preco)
             Itens.atualizar(a)
         except Exception as e:
@@ -177,10 +192,12 @@ class View:
             if total <= 0:
                 raise ValueError("O total da compra deve ser positivo.")
             
-
             compras = Compras.listar()
-            novo_id = max([compra.get_id() for compra in compras], default=0) + 1
-            
+            if compras:
+                novo_id = max(compra.get_id() for compra in compras) + 1
+            else:
+                novo_id = 1
+
             a = Compra(novo_id, datetime.now(), total, id_cliente)
             Compras.inserir(a)
             return a.get_id()

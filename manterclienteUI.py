@@ -30,18 +30,15 @@ class ManterclienteUi:
         endereco = st.text_input("informe o endereco")
 
         if st.button("inserir"):
-            if nome == "" or email == "" or senha == "":
-                st.error("nome, e-mail e senha são obrigatórios")
-            elif "@" not in email or "." not in email:
-                st.error("informe um e-mail válido")
-            else:
-                try:
-                    View.cliente_inserir(nome, email, fone, endereco, senha)
-                    st.success("cliente inserido com sucesso")
-                    time.sleep(2)
-                    st.rerun()
-                except Exception as e:
-                    st.error(f"erro ao inserir cliente: {e}")
+            try:
+                View.cliente_inserir(nome, email, fone, endereco, senha)
+                st.success("cliente inserido com sucesso")
+                time.sleep(2)
+                st.rerun()
+            except ValueError as e:
+                st.error(e)
+            except Exception as e:
+                st.error(f"erro ao inserir cliente: {e}")
 
     def atualizar():
         clientes = View.cliente_listar()
@@ -56,19 +53,16 @@ class ManterclienteUi:
             senha = st.text_input("informe a nova senha", op.get_senha())
 
             if st.button("atualizar"):
-                if nome == "" or email == "" or senha == "":
-                    st.error("nome, e-mail e senha são obrigatórios")
-                elif "@" not in email or "." not in email:
-                    st.error("informe um e-mail válido")
-                else:
-                    try:
-                        id = op.get_id()
-                        View.cliente_atualizar(id, nome, email, fone, endereco, senha)
-                        st.success("cliente atualizado com sucesso")
-                        time.sleep(2)
-                        st.rerun()
-                    except Exception as e:
-                        st.error(f"erro ao atualizar cliente: {e}")
+                try:
+                    id = op.get_id()
+                    View.cliente_atualizar(id, nome, email, fone, endereco, senha)
+                    st.success("cliente atualizado com sucesso")
+                    time.sleep(2)
+                    st.rerun()
+                except ValueError as e:
+                    st.error(e)
+                except Exception as e:
+                    st.error(f"erro ao atualizar cliente: {e}")
 
     def excluir():
         clientes = View.cliente_listar()
